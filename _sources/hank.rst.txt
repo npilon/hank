@@ -1,0 +1,18 @@
+hank package
+============
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   hank.bin
+
+Module contents
+---------------
+
+.. automodule:: hank
+   :members:
+   :undoc-members:
+   :show-inheritance:

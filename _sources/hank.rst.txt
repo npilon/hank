@@ -1,13 +1,16 @@
 hank package
 ============
 
-Subpackages
------------
+Submodules
+----------
 
-.. toctree::
-   :maxdepth: 4
+hank.task module
+----------------
 
-   hank.bin
+.. automodule:: hank.task
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Module contents
 ---------------

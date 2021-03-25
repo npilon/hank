@@ -30,7 +30,7 @@ jobs:
         pip install .[test]
     - name: Test with pytest
       run: |
-        pytest --cov-report xml --cov=hank hank/tests/
+        pytest --cov-report xml --cov=src/hank tests/
     - name: Upload codecov
       uses: codecov/codecov-action@v1
 
@@ -49,10 +49,10 @@ jobs:
         pip install .[test]
     - name: Lint with flake8
       run: |
-        flake8 hank --count --verbose --show-source --statistics
+        flake8 src/hank --count --verbose --show-source --statistics
     - name: Check with black
       run: |
-        black --check hank
+        black --check src/hank
 
   publish:
     if: "contains(github.event.head_commit.message, 'Bump version')"

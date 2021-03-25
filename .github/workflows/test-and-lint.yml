@@ -22,7 +22,7 @@ jobs:
         pip install .[test]
     - name: Test with pytest
       run: |
-        pytest tests/
+        pytest --cov-report xml --cov=src/hank tests/
     - name: Upload codecov
       uses: codecov/codecov-action@v1
 

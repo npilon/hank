@@ -187,18 +187,17 @@
   <div class="section" id="getting-started">
 <h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
 <dl class="simple">
-<dt>job</dt><dd><p>A decorated Python callable; a specification of how to do work.
-A special case is a task, which does celery-style argument dispatch.</p>
+<dt>Plan</dt><dd><p>A decorated Python callable; a specification of how to do work.</p>
 </dd>
-<dt>Work Order</dt><dd><p>A specification of work to be done; specifies a job and parameters</p>
+<dt>Task</dt><dd><p>A specification of work to be done; specifies a plan and parameters</p>
 </dd>
-<dt>Message</dt><dd><p>A serialized work order in a queue or other message dispatch system</p>
+<dt>Message</dt><dd><p>A serialized task in a queue or other message dispatch system</p>
 </dd>
-<dt>Worker</dt><dd><p>A process that executes jobs based on work orders</p>
+<dt>Worker</dt><dd><p>A process that executes plans based on tasks</p>
 </dd>
-<dt>Dispatcher</dt><dd><p>An object that handles the mechanics of submitting and accepting work orders</p>
+<dt>Dispatcher</dt><dd><p>An object that handles the mechanics of submitting and accepting tasks</p>
 </dd>
-<dt>Work flow</dt><dd><p>Work orders can be connected together by flow operators to orchestrate more complex objectives</p>
+<dt>Work order</dt><dd><p>Tasks can be connected together by flow operators to orchestrate more complex objectives</p>
 </dd>
 </dl>
 </div>

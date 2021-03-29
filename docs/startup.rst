@@ -2,21 +2,20 @@ Getting Started
 ===============
 
 
-job
+Plan
     A decorated Python callable; a specification of how to do work.
-    A special case is a task, which does celery-style argument dispatch.
 
-Work Order
-    A specification of work to be done; specifies a job and parameters
+Task
+    A specification of work to be done; specifies a plan and parameters
 
 Message
-    A serialized work order in a queue or other message dispatch system
+    A serialized task in a queue or other message dispatch system
 
 Worker
-    A process that executes jobs based on work orders
+    A process that executes plans based on tasks
 
 Dispatcher
-    An object that handles the mechanics of submitting and accepting work orders
+    An object that handles the mechanics of submitting and accepting tasks
 
-Work flow
-    Work orders can be connected together by flow operators to orchestrate more complex objectives
+Work order
+    Tasks can be connected together by flow operators to orchestrate more complex objectives

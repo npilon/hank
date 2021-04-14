@@ -17,10 +17,11 @@ Hank is an asynchronous job processing and orchestration system.
 ## Quick Start
 
 ```python
-from hank import ArgumentUnpacking, Dispatcher, LocalMemoryWorkQueue, LocalMemoryResultStore, plan, ReturnValueResult
+from hank import ArgumentUnpackingTask, Dispatcher, LocalMemoryWorkQueue, LocalMemoryResultStore, plan
 
 
-@plan(task=ArgumentUnpacking(), results=ReturnValueResult())
+# ArgumentUnpackingTask includes setting result from return value.
+@plan(task=ArgumentUnpackingTask())
 def do_arithmetic(x, y):
     return x + y
 

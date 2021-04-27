@@ -6,7 +6,7 @@ import uuid
 
 from .plan import derive_plan_path, Plan
 from .result_store import ResultStore
-from .task import Task
+from .task import Task, Worker
 from .work_queue import WorkQueue
 
 
@@ -19,7 +19,10 @@ class Dispatcher:
     def send(self, task: Task):
         task_id = uuid.uuid4()
         message = json.dumps(
-            {"task_id": str(task_id), "task": dataclasses.asdict(task)}
+            {
+                "task_id": str(task_id),
+                "task": dataclasses.asdict(task),
+            }
         ).encode("utf8")
         self.queues[task.queue].send(message)
         return task_id
@@ -27,12 +30,17 @@ class Dispatcher:
     def dispatch(self, message):
         message = json.loads(message)
         task = Task(**message["task"])
-        task.dispatcher = self
-        result = self.plans[task.plan](task)
-        if task.store_result is not False:
-            self.result_stores[
-                task.store_result if task.store_result is not True else None
-            ].store(uuid.UUID(task["task_id"]), result)
+        task.worker = Worker(
+            task_id=message["task_id"],
+            result_store=(
+                self.result_stores[
+                    task.store_result if task.store_result is not True else None
+                ]
+                if task.store_result is not False
+                else None
+            ),
+        )
+        self.plans[message["plan"]].receive(task)
 
     def dispatch_forever(self):
         pass

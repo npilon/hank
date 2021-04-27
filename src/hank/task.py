@@ -3,6 +3,18 @@
 import copy
 import dataclasses
 from typing import Any, Dict, Union
+import uuid
+
+from .result_store import ResultStore
+
+
+class Worker:
+    def __init__(self, task_id: uuid.UUID, result_store: ResultStore):
+        self.task_id = task_id
+        self.result_store = result_store
+
+    def store_result(self, result):
+        self.result_store.store(self.task_id, result)
 
 
 @dataclasses.dataclass
@@ -21,8 +33,8 @@ class Task:
     #: * False - no result store
     #: * string - named result store
     store_result: Union[bool, str, None] = False
-    #: The dispatcher executing this task.
-    dispatcher: Any = None
+    #: The worker executing this task.
+    worker: Worker = None
 
     def options(self, **kwargs):
         return Task(

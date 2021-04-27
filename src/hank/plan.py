@@ -11,9 +11,16 @@ from typing import Callable, Protocol, runtime_checkable
 from .task import Task
 
 
+class Result:
+    pass
+
+
 @runtime_checkable
 class Plan(Protocol):
-    def task():
+    def task(*args, **kwargs) -> Task:
+        pass
+
+    def receive(task: Task):
         pass
 
 
@@ -26,4 +33,21 @@ def derive_plan_path(fn: Callable) -> str:
 
 def plan(fn: Callable) -> Callable:
     fn.task = partial(Task, plan=derive_plan_path(fn))
+    fn.receive = fn
+
+    return fn
+
+
+def argument_unpacking_task(plan: Callable, *args, **kwargs):
+    return Task(plan=plan, params={"args": args, "kwargs": kwargs})
+
+
+def argument_unpacking_receive(plan: Callable, task: Task):
+    task.worker.store_result(plan(*task["params"]["args"], **task["params"]["kwargs"]))
+
+
+def argument_unpacking_plan(fn: Callable) -> Callable:
+    fn.task = partial(argument_unpacking_task, plan=derive_plan_path(fn))
+    fn.receive = partial(argument_unpacking_receive, plan=fn)
+
     return fn

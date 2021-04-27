@@ -37,7 +37,9 @@ if __name__ == '__main__':
     dispatcher.add_result_store(result_store)
     dispatcher.add_job(do_arithmetic)
     # Store result could also take the name of a configured result store.
-    result = dispatcher.send(do_arithmetic.task(2, 3).options(store_result=True))
+    result = dispatcher.send(
+        do_arithmetic.task(2, 3).options(store_result=dispatcher.result_store)
+    )
     dispatcher.dispatch_until_exhausted()
     print(result.wait())
 ```

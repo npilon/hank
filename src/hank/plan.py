@@ -1,3 +1,10 @@
+"""Plans are decorated Python callables.
+
+Each is a specification of how to do work.
+Plans can be used to create tasks,
+or can receive tasks from a dispatcher to execute.
+"""
+
 from functools import partial
 from typing import Callable, Protocol, runtime_checkable
 

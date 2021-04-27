@@ -1,10 +1,13 @@
+"""Tasks are specifications of jobs to be done."""
+
+import copy
 import dataclasses
 from typing import Any, Dict
 
 
 @dataclasses.dataclass
 class Task:
-    """Tasks are specifications of jobs to be done."""
+    """The most basic, fundamental style of task."""
 
     #: Name of a registered plan.
     plan: str
@@ -16,3 +19,15 @@ class Task:
     store_result: str = None
     #: The dispatcher executing this task.
     dispatcher: Any = None
+
+    def options(self, **kwargs):
+        return Task(
+            plan=self.plan,
+            params=copy.copy(self.params),
+            queue=(kwargs["queue"] if "queue" in kwargs else self.queue),
+            store_result=(
+                kwargs["store_result"]
+                if "store_result" in kwargs
+                else self.store_result
+            ),
+        )

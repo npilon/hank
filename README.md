@@ -35,7 +35,7 @@ if __name__ == '__main__':
     dispatcher.add_queue(LocalMemoryWorkQueue())
     # Unnamed result store - default for any results.
     dispatcher.add_result_store(result_store)
-    dispatcher.add_job(do_arithmetic)
+    dispatcher.add_plan(do_arithmetic)
     # Store result could also take the name of a configured result store.
     result = dispatcher.send(
         do_arithmetic.task(2, 3).options(store_result=dispatcher.result_store)
@@ -61,7 +61,7 @@ dispatcher = Dispatcher()
 if __name__ == '__main__':
     dispatcher.add_queue(example_queue=RedisWorkQueue('redis://localhost:6379/0'))
     dispatcher.add_result_store(example_store=RedisResultStore('redis://localhost:6379/1'))
-    dispatcher.add_job(do_arithmetic)
+    dispatcher.add_plan(do_arithmetic)
 
     if sys.argv[1] == 'worker':
         dispatcher.dispatch_forver()

@@ -37,7 +37,9 @@ dev_requirements = [
     "wheel>=0.34.2",
 ]
 
-requirements = []
+requirements = [
+    "redis>=3.5.3",
+]
 
 extra_requirements = {
     "setup": setup_requirements,
@@ -46,7 +48,7 @@ extra_requirements = {
     "all": [
         *requirements,
         *dev_requirements,
-    ]
+    ],
 }
 
 setup(
@@ -70,8 +72,8 @@ setup(
     include_package_data=True,
     keywords="hank",
     name="hank",
-    packages=find_packages(where='src', exclude=["tests", "*.tests", "*.tests.*"]),
-    package_dir = {"":"src"},
+    packages=find_packages(where="src", exclude=["tests", "*.tests", "*.tests.*"]),
+    package_dir={"": "src"},
     python_requires=">=3.7",
     setup_requires=setup_requirements,
     test_suite="tests",

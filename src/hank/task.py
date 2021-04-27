@@ -2,7 +2,7 @@
 
 import copy
 import dataclasses
-from typing import Any, Dict
+from typing import Any, Dict, Union
 
 
 @dataclasses.dataclass
@@ -16,7 +16,11 @@ class Task:
     #: The queue to submit this task to.
     queue: str = None
     #: The result store to store this task's results in.
-    store_result: str = None
+    #:
+    #: * True or None - default result store
+    #: * False - no result store
+    #: * string - named result store
+    store_result: Union[bool, str, None] = False
     #: The dispatcher executing this task.
     dispatcher: Any = None
 

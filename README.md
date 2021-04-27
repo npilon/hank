@@ -38,7 +38,7 @@ if __name__ == '__main__':
     dispatcher.add_plan(do_arithmetic)
     # Store result could also take the name of a configured result store.
     result = dispatcher.send(
-        do_arithmetic.task(2, 3).options(store_result=dispatcher.result_store)
+        do_arithmetic.task(2, 3).options(store_result=True)
     )
     dispatcher.dispatch_until_exhausted()
     print(result.wait())

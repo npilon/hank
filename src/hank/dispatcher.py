@@ -19,7 +19,7 @@ class Dispatcher:
     def send(self, task: Task):
         task_id = uuid.uuid4()
         message = json.dumps(
-            {"task_id": task_id, "task": dataclasses.asdict(task)}
+            {"task_id": str(task_id), "task": dataclasses.asdict(task)}
         ).encode("utf8")
         self.queues[task.queue].send(message)
         return task_id
@@ -29,7 +29,10 @@ class Dispatcher:
         task = Task(**message["task"])
         task.dispatcher = self
         result = self.plans[task.plan](task)
-        self.result_stores[task.store_result].store(uuid.UUID(task["task_id"]), result)
+        if task.store_result is not False:
+            self.result_stores[
+                task.store_result if task.store_result is not True else None
+            ].store(uuid.UUID(task["task_id"]), result)
 
     def dispatch_forever(self):
         pass

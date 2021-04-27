@@ -1,5 +1,7 @@
 """Work queues can submit and listen for tasks."""
 
+from __future__ import annotations
+
 from collections.abc import Generator
 from typing import Protocol
 

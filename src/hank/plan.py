@@ -38,16 +38,14 @@ def plan(fn: Callable) -> Callable:
     return fn
 
 
-def argument_unpacking_task(*args, plan: Callable, **kwargs):
-    return Task(plan=plan, params={"args": args, "kwargs": kwargs})
-
-
-def argument_unpacking_receive(task: Task, *, plan: Callable):
-    task.worker.store_result(plan(*task.params["args"], **task.params["kwargs"]))
-
-
 def argument_unpacking_plan(fn: Callable) -> Callable:
-    fn.task = partial(argument_unpacking_task, plan=derive_plan_path(fn))
-    fn.receive = partial(argument_unpacking_receive, plan=fn)
+    def argument_unpacking_task(*args, **kwargs):
+        return Task(plan=derive_plan_path(fn), params={"args": args, "kwargs": kwargs})
+
+    def argument_unpacking_receive(task: Task):
+        task.worker.store_result(fn(*task.params["args"], **task.params["kwargs"]))
+
+    fn.task = argument_unpacking_task
+    fn.receive = argument_unpacking_receive
 
     return fn

@@ -3,9 +3,9 @@
 """Top-level package for hank."""
 
 from .dispatcher import Dispatcher
-from .plan import argument_unpacking_plan
-from .result_store import LocalMemoryResultStore
-from .work_queue import LocalMemoryWorkQueue
+from .plans import argument_unpacking_plan, plan
+from .result_store import LocalMemoryResultStore, RedisResultStore
+from .work_queue import LocalMemoryWorkQueue, RedisWorkQueue
 
 __author__ = "Nicholas Owen Paul Pilon"
 __email__ = "npilon@gmail.com"
@@ -19,6 +19,9 @@ __all__ = [
     "Dispatcher",
     "LocalMemoryResultStore",
     "LocalMemoryWorkQueue",
+    "plan",
+    "RedisWorkQueue",
+    "RedisResultStore",
 ]
 
 

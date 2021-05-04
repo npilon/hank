@@ -4,7 +4,7 @@ import dataclasses
 import json
 import uuid
 
-from .plan import derive_plan_path, Plan
+from .plans import derive_plan_path, Plan
 from .result_store import ResultStore
 from .task import Task, Worker
 from .work_queue import WorkQueue

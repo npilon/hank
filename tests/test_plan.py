@@ -1,6 +1,6 @@
 import unittest
 
-from hank.plan import Plan, plan
+from hank.plans import Plan, plan
 
 
 @plan

@@ -2,15 +2,16 @@
 
 from __future__ import annotations
 
-from collections.abc import Generator
 from typing import Protocol
+
+import redis
 
 
 class WorkQueue(Protocol):
     def send(self, message: bytes):
         pass
 
-    def receive(self) -> Generator[bytes]:
+    def poll(self, timeout: int) -> bytes:
         pass
 
 
@@ -21,17 +22,20 @@ class LocalMemoryWorkQueue:
     def send(self, message: bytes):
         self.queue.append(message)
 
-    def receive(self) -> Generator[bytes]:
-        while self.queue:
-            yield self.queue.pop()
+    def poll(self, timeout: int) -> bytes:
+        if self.queue:
+            return self.queue.pop()
 
 
 class RedisWorkQueue:
-    def __init__(self, url: str):
-        pass
+    def __init__(self, url: str, queue: str):
+        self.queue = queue
+        self.redis = redis.Redis.from_url(url)
 
     def send(self, message: bytes):
-        pass
+        self.redis.rpush(self.queue, message)
 
-    def receive(self) -> Generator[bytes]:
-        pass
+    def poll(self, timeout: int) -> bytes:
+        maybe_message = self.redis.blpop(self.queue, timeout)
+        if maybe_message:
+            return maybe_message[1]

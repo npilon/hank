@@ -2,6 +2,7 @@
 
 import dataclasses
 import json
+import time
 import uuid
 
 from .plans import derive_plan_path, Plan
@@ -10,17 +11,26 @@ from .task import Task, Worker
 from .work_queue import WorkQueue
 
 
+class DispatchedTaskTimeout(Exception):
+    pass
+
+
 class DispatchedTask:
     def __init__(self, result_store: ResultStore, task_id: uuid.UUID):
         self.result_store = result_store
         self.task_id = task_id
 
-    def wait(self):
+    def wait(self, timeout: int = 0):
+        start = time.time()
+
         while True:
             try:
                 return self.result_store.get(self.task_id)
             except KeyError:
-                pass
+                if timeout and time.time() - start > timeout:
+                    raise DispatchedTaskTimeout()
+                else:
+                    time.sleep(0.25)
 
 
 class Dispatcher:
@@ -57,11 +67,14 @@ class Dispatcher:
         self.plans[task.plan].receive(task)
 
     def dispatch_forever(self):
-        pass
+        while True:
+            for task_queue in self.queues.values():
+                if message := task_queue.poll(timeout=1):
+                    self.dispatch(message)
 
     def dispatch_until_exhausted(self):
         for task_queue in self.queues.values():
-            for message in task_queue.receive():
+            while message := task_queue.poll(timeout=1):
                 self.dispatch(message)
 
     def add_result_store(self, default: ResultStore = None, **kwargs):

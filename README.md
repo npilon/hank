@@ -59,12 +59,12 @@ dispatcher = Dispatcher()
 
 
 if __name__ == '__main__':
-    dispatcher.add_queue(example_queue=RedisWorkQueue('redis://localhost:6379/0'))
+    dispatcher.add_queue(example_queue=RedisWorkQueue(url='redis://localhost:6379/0', queue='example_queue'))
     dispatcher.add_result_store(example_store=RedisResultStore('redis://localhost:6379/1'))
     dispatcher.add_plan(do_arithmetic)
 
     if sys.argv[1] == 'worker':
-        dispatcher.dispatch_forver()
+        dispatcher.dispatch_forever()
     else:
         result = dispatcher.send(
             do_arithmetic.task(

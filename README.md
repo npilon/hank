@@ -17,7 +17,7 @@ Hank is an asynchronous job processing and orchestration system.
 ## Quick Start
 
 ```python
-from hank import argument_unpacking_plan, Dispatcher, LocalMemoryWorkQueue, LocalMemoryResultStore
+from hank import argument_unpacking_plan, Dispatcher, LocalMemoryWorkQueue, LocalMemoryResultStore, LocalMemoryWorkSite
 
 
 # argument_unpacking_plan includes setting result from return value.
@@ -32,7 +32,7 @@ dispatcher = Dispatcher()
 if __name__ == '__main__':
     result_store = LocalMemoryResultStore()
     # Unnamed queue - default for all messages.
-    dispatcher.add_queue(LocalMemoryWorkQueue())
+    dispatcher.add_queue(default=LocalMemoryWorkQueue())
     # Unnamed result store - default for any results.
     dispatcher.add_result_store(result_store)
     dispatcher.add_plan(do_arithmetic)
@@ -40,14 +40,15 @@ if __name__ == '__main__':
     result = dispatcher.send(
         do_arithmetic.task(2, 3).options(store_result=True)
     )
-    dispatcher.dispatch_until_exhausted()
+    work_site = LocalMemoryWorkSite(dispatcher, None)
+    work_site.dispatch_until_exhausted()
     print(result.wait())
 ```
 
 ```python
 import sys
 
-from hank import Dispatcher, plan, RedisWorkQueue, RedisResultStore
+from hank import Dispatcher, plan, RedisWorkQueue, RedisResultStore, RedisWorkSite
 
 
 @plan
@@ -64,7 +65,8 @@ if __name__ == '__main__':
     dispatcher.add_plan(do_arithmetic)
 
     if sys.argv[1] == 'worker':
-        dispatcher.dispatch_forever()
+        work_site = RedisWorkSite(dispatcher, 'example_queue')
+        work_site.dispatch_forever()
     else:
         result = dispatcher.send(
             do_arithmetic.task(

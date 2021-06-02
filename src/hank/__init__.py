@@ -5,6 +5,7 @@
 from .dispatcher import Dispatcher
 from .plans import argument_unpacking_plan, plan
 from .result_store import LocalMemoryResultStore, RedisResultStore
+from .site import LocalMemoryWorkSite, RedisWorkSite
 from .work_queue import LocalMemoryWorkQueue, RedisWorkQueue
 
 __author__ = "Nicholas Owen Paul Pilon"
@@ -19,9 +20,11 @@ __all__ = [
     "Dispatcher",
     "LocalMemoryResultStore",
     "LocalMemoryWorkQueue",
+    "LocalMemoryWorkSite",
     "plan",
     "RedisWorkQueue",
     "RedisResultStore",
+    "RedisWorkSite",
 ]
 
 

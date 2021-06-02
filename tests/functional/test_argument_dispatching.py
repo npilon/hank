@@ -3,6 +3,7 @@ from hank import (
     Dispatcher,
     LocalMemoryWorkQueue,
     LocalMemoryResultStore,
+    LocalMemoryWorkSite,
 )
 
 # argument_unpacking_plan includes setting result from return value.
@@ -22,5 +23,6 @@ def test_argument_dispatching():
     dispatcher.add_plan(do_arithmetic)
     # Store result could also take the name of a configured result store.
     result = dispatcher.send(do_arithmetic.task(2, 3).options(store_result=True))
-    dispatcher.dispatch_until_exhausted()
+    work_site = LocalMemoryWorkSite(dispatcher, None)
+    work_site.dispatch_until_exhausted()
     assert result.wait() == 5

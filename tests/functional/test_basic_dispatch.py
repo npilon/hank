@@ -1,11 +1,14 @@
 import subprocess
 import sys
 
+from redis import Redis
+
 from hank import (
     plan,
     Dispatcher,
     RedisWorkQueue,
     RedisResultStore,
+    RedisWorkSite,
 )
 
 
@@ -23,14 +26,15 @@ def configure(dispatcher):
     dispatcher.add_result_store(
         example_store=RedisResultStore("redis://localhost:6379/1")
     )
-    do_arithmetic.__module__ = 'tests.functional.test_basic_dispatch'
+    do_arithmetic.__module__ = "tests.functional.test_basic_dispatch"
     dispatcher.add_plan(do_arithmetic)
 
 
 def worker():
     dispatcher = Dispatcher()
     configure(dispatcher)
-    dispatcher.dispatch_forever()
+    work_site = RedisWorkSite(dispatcher, 'example_queue')
+    work_site.dispatch_forever()
 
 
 def test_argument_dispatching():
@@ -42,7 +46,6 @@ def test_argument_dispatching():
 
     dispatcher = Dispatcher()
     configure(dispatcher)
-
 
     try:
         result = dispatcher.send(

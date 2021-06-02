@@ -1,5 +1,8 @@
 """Dispatchers handle the mechanisms of submitting and accepting tasks."""
 
+from __future__ import annotations
+
+from collections.abc import Mapping
 import dataclasses
 import json
 import time
@@ -66,17 +69,6 @@ class Dispatcher:
         )
         self.plans[task.plan].receive(task)
 
-    def dispatch_forever(self):
-        while True:
-            for task_queue in self.queues.values():
-                if message := task_queue.poll(timeout=1):
-                    self.dispatch(message)
-
-    def dispatch_until_exhausted(self):
-        for task_queue in self.queues.values():
-            while message := task_queue.poll(timeout=1):
-                self.dispatch(message)
-
     def add_result_store(self, default: ResultStore = None, **kwargs):
         if default:
             kwargs[None] = default
@@ -88,7 +80,7 @@ class Dispatcher:
             task.store_result if task.store_result is not True else None
         ]
 
-    def add_queue(self, default: WorkQueue = None, **kwargs):
+    def add_queue(self, default: WorkQueue = None, **kwargs: Mapping[str, WorkQueue]):
         if default:
             kwargs[None] = default
 

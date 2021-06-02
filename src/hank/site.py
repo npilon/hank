@@ -30,6 +30,7 @@ class RedisWorkSite:
     def __init__(self, dispatcher: Dispatcher, *queue_names: list[Optional[str]]):
         self.dispatcher = dispatcher
         self.queues = [dispatcher.queues[queue_name] for queue_name in queue_names]
+        self.stop = False
 
     def test_queue(self, name, queue):
         if (
@@ -52,7 +53,7 @@ class RedisWorkSite:
             )
         ]
 
-        while True:
+        while not self.stop:
             for r, queues in by_redis:
                 random.shuffle(queues)
                 if message := r.blpop(queues, 1):

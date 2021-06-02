@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from abc import ABCMeta, abstractmethod
 from itertools import groupby
 import random
 from typing import Optional
@@ -9,16 +10,30 @@ from typing import Optional
 import redis
 
 from .dispatcher import Dispatcher
+from .work_queue import WorkQueue
 
 
-class LocalMemoryWorkSite:
+class BaseWorkSite(metaclass=ABCMeta):
     def __init__(self, dispatcher: Dispatcher, *queue_names: list[Optional[str]]):
         self.dispatcher = dispatcher
-        self.queues = [dispatcher.queues[queue_name] for queue_name in queue_names]
+        self.queues = [
+            dispatcher.queues[queue_name]
+            for queue_name in queue_names
+            if self.test_queue(queue_name, dispatcher.queues[queue_name])
+        ]
+        self.stop = False
 
-    def test_queue(self, name, queue):
+    @abstractmethod
+    def test_queue(self, name: str, queue: WorkQueue) -> bool:
+        pass
+
+
+class LocalMemoryWorkSite(BaseWorkSite):
+    def test_queue(self, name: str, queue: WorkQueue) -> bool:
         if not hasattr(queue, "messages"):
             raise ValueError(f"{name} incompatible with {type(self)}")
+
+        return True
 
     def dispatch_until_exhausted(self):
         for task_queue in self.queues:
@@ -26,19 +41,16 @@ class LocalMemoryWorkSite:
                 self.dispatcher.dispatch(task_queue.messages.pop())
 
 
-class RedisWorkSite:
-    def __init__(self, dispatcher: Dispatcher, *queue_names: list[Optional[str]]):
-        self.dispatcher = dispatcher
-        self.queues = [dispatcher.queues[queue_name] for queue_name in queue_names]
-        self.stop = False
-
-    def test_queue(self, name, queue):
+class RedisWorkSite(BaseWorkSite):
+    def test_queue(self, name: str, queue: WorkQueue) -> bool:
         if (
             not hasattr(queue, "redis")
             or not hasattr(queue, "queue")
             or not hasattr(queue, "url")
         ):
             raise ValueError(f"{name} incompatible with {type(self)}")
+
+        return True
 
     def dispatch_until_exhausted(self):
         for task_queue in self.queues:

@@ -28,7 +28,7 @@ def test_argument_dispatching():
     result = dispatcher.send(do_arithmetic.task(2, 3).options(store_result=True))
     work_site = LocalMemoryWorkSite(dispatcher, None)
     work_site.dispatch_until_exhausted()
-    assert result.wait() == 5
+    assert result.wait(timeout=0.5) == 5
 
 
 def test_argument_dispatching_redis():
@@ -45,4 +45,4 @@ def test_argument_dispatching_redis():
     result = dispatcher.send(do_arithmetic.task(4, 3).options(store_result=True))
     work_site = RedisWorkSite(dispatcher, None)
     work_site.dispatch_until_exhausted()
-    assert result.wait() == 7
+    assert result.wait(timeout=0.5) == 7

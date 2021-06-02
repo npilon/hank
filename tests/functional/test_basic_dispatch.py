@@ -41,6 +41,6 @@ def test_argument_dispatching():
         assert result.wait(timeout=2) == 10
         work_site.stop = True
     finally:
-        worker.join(timeout=1)
+        worker.join(timeout=5)
         if worker.is_alive():
             raise Exception()

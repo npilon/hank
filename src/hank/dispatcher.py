@@ -23,7 +23,7 @@ class DispatchedTask:
         self.result_store = result_store
         self.task_id = task_id
 
-    def wait(self, timeout: int = 0):
+    def wait(self, timeout: float = 0):
         start = time.time()
 
         while True:

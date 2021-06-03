@@ -30,7 +30,7 @@ class WorkSite(metaclass=ABCMeta):
 
     @abstractmethod
     def test_queue(self, name: str, queue: WorkQueue) -> bool:
-        pass
+        raise NotImplementedError
 
 
 class LocalMemoryWorkSite(WorkSite):

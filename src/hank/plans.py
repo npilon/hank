@@ -17,10 +17,10 @@ class Plan(Protocol):
     plan_path: str
 
     def task(*args, **kwargs) -> Task:
-        pass
+        raise NotImplementedError
 
     def receive(task: Task):
-        pass
+        raise NotImplementedError
 
 
 def _derive_plan_path(fn: Callable) -> str:

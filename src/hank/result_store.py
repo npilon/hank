@@ -9,10 +9,10 @@ import redis
 
 class ResultStore(Protocol):
     def store(self, task_id: UUID, result: Any):
-        pass
+        raise NotImplementedError
 
     def get(self, task_id: UUID) -> Any:
-        pass
+        raise NotImplementedError
 
 
 class LocalMemoryResultStore:

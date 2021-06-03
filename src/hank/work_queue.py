@@ -9,7 +9,7 @@ import redis
 
 class WorkQueue(Protocol):
     def send(self, message: bytes):
-        pass
+        raise NotImplementedError
 
 
 class LocalMemoryWorkQueue:

@@ -24,7 +24,7 @@ class Plan(Protocol):
         pass
 
 
-def derive_plan_path(fn: Callable) -> str:
+def _derive_plan_path(fn: Callable) -> str:
     if fn.__module__ != "__main__":
         return f"/{fn.__module__}.{fn.__name__}".replace(".", "/")
     else:
@@ -32,15 +32,19 @@ def derive_plan_path(fn: Callable) -> str:
 
 
 def plan(fn: Callable) -> Callable:
-    fn.task = partial(Task, plan=derive_plan_path(fn))
+    """A basic plan. Expects to receive a ``Task`` as an argument."""
+    fn.task = partial(Task, plan=_derive_plan_path(fn))
     fn.receive = fn
 
     return fn
 
 
 def argument_unpacking_plan(fn: Callable) -> Callable:
+    """A plan that follows python conventions around argument passing
+    and returning results."""
+
     def argument_unpacking_task(*args, **kwargs):
-        return Task(plan=derive_plan_path(fn), params={"args": args, "kwargs": kwargs})
+        return Task(plan=_derive_plan_path(fn), params={"args": args, "kwargs": kwargs})
 
     def argument_unpacking_receive(task: Task):
         task.worker.store_result(fn(*task.params["args"], **task.params["kwargs"]))

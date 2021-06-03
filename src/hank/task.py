@@ -19,7 +19,8 @@ class Worker:
 
 @dataclasses.dataclass
 class Task:
-    """The most basic, fundamental style of task."""
+    """Provide a description of work to be done that can easily be serialized
+    to/from JSON."""
 
     #: Name of a registered plan.
     plan: str

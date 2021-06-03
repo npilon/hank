@@ -10,7 +10,6 @@ Welcome to hank's documentation!
    installation
    Package modules <modules>
    contributing
-   math
    startup
 
 .. mdinclude:: ../README.md

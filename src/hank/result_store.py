@@ -16,6 +16,11 @@ class ResultStore(Protocol):
 
 
 class LocalMemoryResultStore:
+    """Store results in local memory.
+
+    Principally useful for testing or small toy applications.
+    """
+
     def __init__(self):
         self.data = {}
 
@@ -27,6 +32,11 @@ class LocalMemoryResultStore:
 
 
 class RedisResultStore:
+    """A result store using redis.
+
+    The generated ID of the task will be used as the key for the result.
+    """
+
     def __init__(self, url: str):
         self.redis = redis.Redis.from_url(url)
 

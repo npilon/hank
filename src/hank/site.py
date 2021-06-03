@@ -1,4 +1,9 @@
-"""A site is configured with a dispatcher to perform work from queues."""
+"""A Work Site is configured with a dispatcher to perform work from
+a specified set of queues.
+
+Most Work Sites can only accept specific types of queues,
+and will raise an exception if asked to acquire tasks of unexpected types.
+"""
 
 from __future__ import annotations
 
@@ -13,7 +18,7 @@ from .dispatcher import Dispatcher
 from .work_queue import WorkQueue
 
 
-class BaseWorkSite(metaclass=ABCMeta):
+class WorkSite(metaclass=ABCMeta):
     def __init__(self, dispatcher: Dispatcher, *queue_names: list[Optional[str]]):
         self.dispatcher = dispatcher
         self.queues = [
@@ -28,7 +33,12 @@ class BaseWorkSite(metaclass=ABCMeta):
         pass
 
 
-class LocalMemoryWorkSite(BaseWorkSite):
+class LocalMemoryWorkSite(WorkSite):
+    """A work site capable of acquiring tasks from ``LocalMemoryWorkQueue`` and similar.
+
+    Cannot ``dispatch_forever`` because that's not really a good idea with local memory.
+    """
+
     def test_queue(self, name: str, queue: WorkQueue) -> bool:
         if not hasattr(queue, "messages"):
             raise ValueError(f"{name} incompatible with {type(self)}")
@@ -36,12 +46,17 @@ class LocalMemoryWorkSite(BaseWorkSite):
         return True
 
     def dispatch_until_exhausted(self):
+        """Dispatch from each queue in turn until it runs out of messages,
+        then move on."""
+
         for task_queue in self.queues:
             while task_queue.messages:
                 self.dispatcher.dispatch(task_queue.messages.pop())
 
 
-class RedisWorkSite(BaseWorkSite):
+class RedisWorkSite(WorkSite):
+    """A work site capable of acquiring tasks from ``RedisWorkQueue`` and similar."""
+
     def test_queue(self, name: str, queue: WorkQueue) -> bool:
         if (
             not hasattr(queue, "redis")
@@ -53,11 +68,23 @@ class RedisWorkSite(BaseWorkSite):
         return True
 
     def dispatch_until_exhausted(self):
+        """Dispatch from each queue in turn until it runs out of messages,
+        then move on."""
+
         for task_queue in self.queues:
             while message := task_queue.redis.lpop(task_queue.queue):
                 self.dispatcher.dispatch(message)
 
     def dispatch_forever(self):
+        """Dispatch until asked to stop.
+
+        Will collect queues from identifiably identical redis instances together,
+        and do a single ``BLPOP`` to get the next message from all queues
+        from an instance.
+        Configured queues are permuted before ``BLPOP`` to ensure
+        a single very busy queue does not take over.
+        """
+
         by_redis = [
             (redis.Redis.from_url(url), [queue.queue for queue in queues])
             for url, queues in groupby(

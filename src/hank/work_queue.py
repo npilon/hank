@@ -13,6 +13,11 @@ class WorkQueue(Protocol):
 
 
 class LocalMemoryWorkQueue:
+    """A work queue that keeps a set of tasks in local memory.
+
+    Principally useful for testing or small toy applications.
+    """
+
     def __init__(self):
         self.messages = []
 
@@ -21,6 +26,11 @@ class LocalMemoryWorkQueue:
 
 
 class RedisWorkQueue:
+    """A work queue using redis lists.
+
+    The configured queue name will be used as the name of the list.
+    """
+
     def __init__(self, url: str, queue: str):
         self.queue = queue
         self.url = url

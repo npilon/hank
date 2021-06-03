@@ -8,7 +8,7 @@ import json
 import time
 import uuid
 
-from .plans import _derive_plan_path, Plan
+from .plans import Plan
 from .result_store import ResultStore
 from .task import Task, Worker
 from .work_queue import WorkQueue
@@ -112,4 +112,4 @@ class Dispatcher:
 
     def add_plan(self, plan: Plan):
         """Inform this dispatcher about a plan for performing tasks."""
-        self.plans[_derive_plan_path(plan)] = plan
+        self.plans[plan.plan_path] = plan

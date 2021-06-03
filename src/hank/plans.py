@@ -5,18 +5,17 @@ Plans can be used to create tasks,
 or can receive tasks from a dispatcher to execute.
 """
 
-from functools import partial
-from typing import Callable, Protocol, runtime_checkable
+from __future__ import annotations
+
+from typing import Any, Callable, Protocol, runtime_checkable, Union
 
 from .task import Task
 
 
-class Result:
-    pass
-
-
 @runtime_checkable
 class Plan(Protocol):
+    plan_path: str
+
     def task(*args, **kwargs) -> Task:
         pass
 
@@ -33,8 +32,19 @@ def _derive_plan_path(fn: Callable) -> str:
 
 def plan(fn: Callable) -> Callable:
     """A basic plan. Expects to receive a ``Task`` as an argument."""
-    fn.task = partial(Task, plan=_derive_plan_path(fn))
+
+    def _plan(
+        params: dict[str, Any],
+        queue: str = None,
+        store_result: Union[bool, str, None] = False,
+    ):
+        return Task(
+            plan=fn.plan_path, params=params, queue=queue, store_result=store_result
+        )
+
+    fn.task = _plan
     fn.receive = fn
+    fn.plan_path = _derive_plan_path(fn)
 
     return fn
 
@@ -44,12 +54,13 @@ def argument_unpacking_plan(fn: Callable) -> Callable:
     and returning results."""
 
     def argument_unpacking_task(*args, **kwargs):
-        return Task(plan=_derive_plan_path(fn), params={"args": args, "kwargs": kwargs})
+        return Task(plan=fn.plan_path, params={"args": args, "kwargs": kwargs})
 
     def argument_unpacking_receive(task: Task):
         task.worker.store_result(fn(*task.params["args"], **task.params["kwargs"]))
 
     fn.task = argument_unpacking_task
     fn.receive = argument_unpacking_receive
+    fn.plan_path = _derive_plan_path(fn)
 
     return fn

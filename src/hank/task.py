@@ -1,8 +1,10 @@
 """Tasks are specifications of jobs to be done."""
 
+from __future__ import annotations
+
 import copy
 import dataclasses
-from typing import Any, Dict, Union
+from typing import Any, Union
 import uuid
 
 from .result_store import ResultStore
@@ -25,7 +27,7 @@ class Task:
     #: Name of a registered plan.
     plan: str
     #: Params to be provided to the plan during dispatch.
-    params: Dict[str, Any]
+    params: dict[str, Any]
     #: The queue to submit this task to.
     queue: str = None
     #: The result store to store this task's results in.

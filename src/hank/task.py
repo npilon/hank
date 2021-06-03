@@ -16,7 +16,8 @@ class Worker:
         self.result_store = result_store
 
     def store_result(self, result):
-        self.result_store.store(self.task_id, result)
+        if self.result_store:
+            self.result_store.store(self.task_id, result)
 
 
 @dataclasses.dataclass

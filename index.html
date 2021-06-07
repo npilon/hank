@@ -13,6 +13,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +31,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -98,7 +101,12 @@
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Package modules</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="hank.html">hank package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="hank.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hank.html#module-hank.dispatcher">hank.dispatcher module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hank.html#module-hank.plans">hank.plans module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hank.html#module-hank.result_store">hank.result_store module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hank.html#module-hank.site">hank.site module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hank.html#module-hank.task">hank.task module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hank.html#module-hank.work_queue">hank.work_queue module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hank.html#module-hank">Module contents</a></li>
 </ul>
 </li>
@@ -206,11 +214,12 @@
 </div>
 <div class="section" id="quick-start">
 <h2>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">hank</span> <span class="kn">import</span> <span class="n">Dispatcher</span><span class="p">,</span> <span class="n">LocalMemoryWorkQueue</span><span class="p">,</span> <span class="n">LocalMemoryResultStore</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">hank</span> <span class="kn">import</span> <span class="n">argument_unpacking_plan</span><span class="p">,</span> <span class="n">Dispatcher</span><span class="p">,</span> <span class="n">LocalMemoryWorkQueue</span><span class="p">,</span> <span class="n">LocalMemoryResultStore</span><span class="p">,</span> <span class="n">LocalMemoryWorkSite</span>
 
 
-<span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">arithmetic_task</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<span class="c1"># argument_unpacking_plan includes setting result from return value.</span>
+<span class="nd">@argument_unpacking_plan</span>
+<span class="k">def</span> <span class="nf">do_arithmetic</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
 
 
@@ -219,40 +228,48 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="n">result_store</span> <span class="o">=</span> <span class="n">LocalMemoryResultStore</span><span class="p">()</span>
-    <span class="n">dispatcher</span><span class="o">.</span><span class="n">add_queue</span><span class="p">(</span><span class="n">LocalMemoryWorkQueue</span><span class="p">())</span>
+    <span class="c1"># Unnamed queue - default for all messages.</span>
+    <span class="n">dispatcher</span><span class="o">.</span><span class="n">add_queue</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">LocalMemoryWorkQueue</span><span class="p">())</span>
+    <span class="c1"># Unnamed result store - default for any results.</span>
     <span class="n">dispatcher</span><span class="o">.</span><span class="n">add_result_store</span><span class="p">(</span><span class="n">result_store</span><span class="p">)</span>
-    <span class="n">dispatcher</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">arithmetic_task</span><span class="p">)</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">dispatcher</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">arithmetic_task</span><span class="o">.</span><span class="n">work_order</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-    <span class="n">dispatcher</span><span class="o">.</span><span class="n">dispatch_until_exhausted</span><span class="p">()</span>
+    <span class="n">dispatcher</span><span class="o">.</span><span class="n">add_plan</span><span class="p">(</span><span class="n">do_arithmetic</span><span class="p">)</span>
+    <span class="c1"># Store result could also take the name of a configured result store.</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">dispatcher</span><span class="o">.</span><span class="n">send</span><span class="p">(</span>
+        <span class="n">do_arithmetic</span><span class="o">.</span><span class="n">task</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="n">store_result</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">work_site</span> <span class="o">=</span> <span class="n">LocalMemoryWorkSite</span><span class="p">(</span><span class="n">dispatcher</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">work_site</span><span class="o">.</span><span class="n">dispatch_until_exhausted</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">wait</span><span class="p">())</span>
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
 
-<span class="kn">from</span> <span class="nn">hank</span> <span class="kn">import</span> <span class="n">Dispatcher</span><span class="p">,</span> <span class="n">job</span><span class="p">,</span> <span class="n">RedisWorkQueue</span><span class="p">,</span> <span class="n">RedisResultStore</span>
+<span class="kn">from</span> <span class="nn">hank</span> <span class="kn">import</span> <span class="n">Dispatcher</span><span class="p">,</span> <span class="n">plan</span><span class="p">,</span> <span class="n">RedisWorkQueue</span><span class="p">,</span> <span class="n">RedisResultStore</span><span class="p">,</span> <span class="n">RedisWorkSite</span>
 
 
-<span class="nd">@job</span>
-<span class="k">def</span> <span class="nf">arithmetic_job</span><span class="p">(</span><span class="n">work_order</span><span class="p">):</span>
-    <span class="n">work_order</span><span class="o">.</span><span class="n">dispatcher</span><span class="o">.</span><span class="n">store_result</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">work_order</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;args&#39;</span><span class="p">]))</span>
+<span class="nd">@plan</span>
+<span class="k">def</span> <span class="nf">do_arithmetic</span><span class="p">(</span><span class="n">task</span><span class="p">):</span>
+    <span class="n">task</span><span class="o">.</span><span class="n">worker</span><span class="o">.</span><span class="n">store_result</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;args&#39;</span><span class="p">]))</span>
 
 
 <span class="n">dispatcher</span> <span class="o">=</span> <span class="n">Dispatcher</span><span class="p">()</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">result_store</span> <span class="o">=</span> <span class="n">RedisResultStore</span><span class="p">(</span><span class="s1">&#39;redis://localhost:6379/1&#39;</span><span class="p">)</span>
-    <span class="n">dispatcher</span><span class="o">.</span><span class="n">add_queue</span><span class="p">(</span><span class="n">RedisWorkQueue</span><span class="p">(</span><span class="s1">&#39;redis://localhost:6379/0&#39;</span><span class="p">))</span>
-    <span class="n">dispatcher</span><span class="o">.</span><span class="n">add_result_store</span><span class="p">(</span><span class="n">result_store</span><span class="p">)</span>
-    <span class="n">dispatcher</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">arithmetic_job</span><span class="p">)</span>
+    <span class="n">dispatcher</span><span class="o">.</span><span class="n">add_queue</span><span class="p">(</span><span class="n">example_queue</span><span class="o">=</span><span class="n">RedisWorkQueue</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;redis://localhost:6379/0&#39;</span><span class="p">,</span> <span class="n">queue</span><span class="o">=</span><span class="s1">&#39;example_queue&#39;</span><span class="p">))</span>
+    <span class="n">dispatcher</span><span class="o">.</span><span class="n">add_result_store</span><span class="p">(</span><span class="n">example_store</span><span class="o">=</span><span class="n">RedisResultStore</span><span class="p">(</span><span class="s1">&#39;redis://localhost:6379/1&#39;</span><span class="p">))</span>
+    <span class="n">dispatcher</span><span class="o">.</span><span class="n">add_plan</span><span class="p">(</span><span class="n">do_arithmetic</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;worker&#39;</span><span class="p">:</span>
-        <span class="n">dispatcher</span><span class="o">.</span><span class="n">dispatch_forver</span><span class="p">()</span>
+        <span class="n">work_site</span> <span class="o">=</span> <span class="n">RedisWorkSite</span><span class="p">(</span><span class="n">dispatcher</span><span class="p">,</span> <span class="s1">&#39;example_queue&#39;</span><span class="p">)</span>
+        <span class="n">work_site</span><span class="o">.</span><span class="n">dispatch_forever</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">dispatcher</span><span class="o">.</span><span class="n">send</span><span class="p">(</span>
-            <span class="n">arithmetic_job</span><span class="o">.</span><span class="n">work_order</span><span class="p">(</span>
-                <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:]]</span>
-            <span class="p">)</span>
+            <span class="n">do_arithmetic</span><span class="o">.</span><span class="n">task</span><span class="p">(</span>
+                <span class="n">params</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:]]),</span>
+                <span class="n">queue</span><span class="o">=</span><span class="s1">&#39;example_queue&#39;</span><span class="p">,</span>
+                <span class="n">store_result</span><span class="o">=</span><span class="s1">&#39;example_store&#39;</span><span class="p">,</span>
+            <span class="p">),</span>
         <span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">wait</span><span class="p">())</span>
 </pre></div>

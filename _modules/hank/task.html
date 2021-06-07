@@ -13,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +31,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -97,7 +100,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">Package modules</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../hank.html">hank package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../hank.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../hank.html#module-hank.dispatcher">hank.dispatcher module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../hank.html#module-hank.plans">hank.plans module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../hank.html#module-hank.result_store">hank.result_store module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../hank.html#module-hank.site">hank.site module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../hank.html#module-hank.task">hank.task module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../hank.html#module-hank.work_queue">hank.work_queue module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../hank.html#module-hank">Module contents</a></li>
 </ul>
 </li>
@@ -159,8 +167,6 @@
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
-          <li><a href="../hank.html">hank</a> &raquo;</li>
-        
       <li>hank.task</li>
     
     
@@ -177,20 +183,59 @@
            <div itemprop="articleBody">
             
   <h1>Source code for hank.task</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">dataclasses</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span>
+<span></span><span class="sd">&quot;&quot;&quot;Tasks are specifications of jobs to be done.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">dataclasses</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+
+<span class="kn">from</span> <span class="nn">.result_store</span> <span class="kn">import</span> <span class="n">ResultStore</span>
+
+
+<div class="viewcode-block" id="Worker"><a class="viewcode-back" href="../../hank.html#hank.task.Worker">[docs]</a><span class="k">class</span> <span class="nc">Worker</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">result_store</span><span class="p">:</span> <span class="n">ResultStore</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task_id</span> <span class="o">=</span> <span class="n">task_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result_store</span> <span class="o">=</span> <span class="n">result_store</span>
+
+<div class="viewcode-block" id="Worker.store_result"><a class="viewcode-back" href="../../hank.html#hank.task.Worker.store_result">[docs]</a>    <span class="k">def</span> <span class="nf">store_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_store</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">result_store</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">task_id</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="Task"><a class="viewcode-back" href="../../hank.html#hank.task.Task">[docs]</a><span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">Task</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Tasks are specifications of jobs to be done.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Provide a description of work to be done that can easily be serialized</span>
+<span class="sd">    to/from JSON.&quot;&quot;&quot;</span>
 
     <span class="c1">#: Name of a registered plan.</span>
     <span class="n">plan</span><span class="p">:</span> <span class="nb">str</span>
     <span class="c1">#: Params to be provided to the plan during dispatch.</span>
-    <span class="n">params</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
-    <span class="c1">#: The dispatcher executing this task.</span>
-    <span class="n">dispatcher</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span></div>
+    <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+    <span class="c1">#: The queue to submit this task to.</span>
+    <span class="n">queue</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1">#: The result store to store this task&#39;s results in.</span>
+    <span class="c1">#:</span>
+    <span class="c1">#: * True or None - default result store</span>
+    <span class="c1">#: * False - no result store</span>
+    <span class="c1">#: * string - named result store</span>
+    <span class="n">store_result</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="c1">#: The worker executing this task.</span>
+    <span class="n">worker</span><span class="p">:</span> <span class="n">Worker</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Task.options"><a class="viewcode-back" href="../../hank.html#hank.task.Task.options">[docs]</a>    <span class="k">def</span> <span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Task</span><span class="p">(</span>
+            <span class="n">plan</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">plan</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">),</span>
+            <span class="n">queue</span><span class="o">=</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;queue&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;queue&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="p">),</span>
+            <span class="n">store_result</span><span class="o">=</span><span class="p">(</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;store_result&quot;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="s2">&quot;store_result&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span>
+                <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">store_result</span>
+            <span class="p">),</span>
+        <span class="p">)</span></div></div>
 </pre></div>
 
            </div>

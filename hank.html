@@ -13,6 +13,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +31,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -99,7 +102,12 @@
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">Package modules</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">hank package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-hank.dispatcher">hank.dispatcher module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-hank.plans">hank.plans module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-hank.result_store">hank.result_store module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-hank.site">hank.site module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-hank.task">hank.task module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-hank.work_queue">hank.work_queue module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-hank">Module contents</a></li>
 </ul>
 </li>
@@ -194,30 +202,337 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-hank.task">
-<span id="hank-task-module"></span><h2>hank.task module<a class="headerlink" href="#module-hank.task" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-hank.dispatcher">
+<span id="hank-dispatcher-module"></span><h2>hank.dispatcher module<a class="headerlink" href="#module-hank.dispatcher" title="Permalink to this headline">¶</a></h2>
+<p>Dispatchers handle the mechanisms of submitting and accepting tasks.</p>
 <dl class="py class">
-<dt id="hank.task.Task">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">hank.task.</span></code><code class="sig-name descname"><span class="pre">Task</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plan</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dispatcher</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/task.html#Task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.task.Task" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hank.dispatcher.DispatchedTask">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hank.dispatcher.</span></span><span class="sig-name descname"><span class="pre">DispatchedTask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result_store</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#hank.result_store.ResultStore" title="hank.result_store.ResultStore"><span class="pre">hank.result_store.ResultStore</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">uuid.UUID</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/dispatcher.html#DispatchedTask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.dispatcher.DispatchedTask" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Tasks are specifications of jobs to be done.</p>
-<dl class="py attribute">
-<dt id="hank.task.Task.dispatcher">
-<code class="sig-name descname"><span class="pre">dispatcher</span></code><em class="property"><span class="pre">:</span> <span class="pre">Any</span></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#hank.task.Task.dispatcher" title="Permalink to this definition">¶</a></dt>
-<dd><p>The dispatcher executing this task.</p>
+<p>A record of a task that is awaiting a worker to perform it.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.dispatcher.DispatchedTask.wait">
+<span class="sig-name descname"><span class="pre">wait</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/dispatcher.html#DispatchedTask.wait"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.dispatcher.DispatchedTask.wait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Access results if the task is expected to produce any.</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="hank.dispatcher.DispatchedTaskTimeout">
+<em class="property"><span class="pre">exception</span> </em><span class="sig-prename descclassname"><span class="pre">hank.dispatcher.</span></span><span class="sig-name descname"><span class="pre">DispatchedTaskTimeout</span></span><a class="reference internal" href="_modules/hank/dispatcher.html#DispatchedTaskTimeout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.dispatcher.DispatchedTaskTimeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hank.dispatcher.Dispatcher">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hank.dispatcher.</span></span><span class="sig-name descname"><span class="pre">Dispatcher</span></span><a class="reference internal" href="_modules/hank/dispatcher.html#Dispatcher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.dispatcher.Dispatcher" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A dispatcher forms the core of a <code class="docutils literal notranslate"><span class="pre">hank</span></code> application.</p>
+<p>It maintains a registry of plans, queues, and result stores.
+The easiest way to ensure a coherent system is for all workers to use
+identically-configured dispatchers.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.dispatcher.Dispatcher.add_plan">
+<span class="sig-name descname"><span class="pre">add_plan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plan</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#hank.plans.Plan" title="hank.plans.Plan"><span class="pre">hank.plans.Plan</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/dispatcher.html#Dispatcher.add_plan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.dispatcher.Dispatcher.add_plan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inform this dispatcher about a plan for performing tasks.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.dispatcher.Dispatcher.add_queue">
+<span class="sig-name descname"><span class="pre">add_queue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#hank.work_queue.WorkQueue" title="hank.work_queue.WorkQueue"><span class="pre">hank.work_queue.WorkQueue</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">collections.abc.Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#hank.work_queue.WorkQueue" title="hank.work_queue.WorkQueue"><span class="pre">hank.work_queue.WorkQueue</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/dispatcher.html#Dispatcher.add_queue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.dispatcher.Dispatcher.add_queue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attach a work queue to this dispatcher.</p>
+<p>Work queues may be named by passing as keyword, or configured as the default.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.dispatcher.Dispatcher.add_result_store">
+<span class="sig-name descname"><span class="pre">add_result_store</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#hank.result_store.ResultStore" title="hank.result_store.ResultStore"><span class="pre">hank.result_store.ResultStore</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/dispatcher.html#Dispatcher.add_result_store"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.dispatcher.Dispatcher.add_result_store" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attach a result store to this dispatcher.</p>
+<p>Result stores may be named by passing as keyword, or configured as the default.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.dispatcher.Dispatcher.dispatch">
+<span class="sig-name descname"><span class="pre">dispatch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/dispatcher.html#Dispatcher.dispatch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.dispatcher.Dispatcher.dispatch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accept a message and perform the described task.</p>
+<p>A Work Site should be used to inform a dispatcher when a message is ready.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.dispatcher.Dispatcher.send">
+<span class="sig-name descname"><span class="pre">send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#hank.task.Task" title="hank.task.Task"><span class="pre">hank.task.Task</span></a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#hank.dispatcher.DispatchedTask" title="hank.dispatcher.DispatchedTask"><span class="pre">hank.dispatcher.DispatchedTask</span></a><a class="reference internal" href="_modules/hank/dispatcher.html#Dispatcher.send"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.dispatcher.Dispatcher.send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Submit a task to hopefully be performed by a worker.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-hank.plans">
+<span id="hank-plans-module"></span><h2>hank.plans module<a class="headerlink" href="#module-hank.plans" title="Permalink to this headline">¶</a></h2>
+<p>Plans are decorated Python callables.</p>
+<p>Each is a specification of how to do work.
+Plans can be used to create tasks,
+or can receive tasks from a dispatcher to execute.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="hank.plans.Plan">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hank.plans.</span></span><span class="sig-name descname"><span class="pre">Plan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/plans.html#Plan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.plans.Plan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code></p>
 <dl class="py attribute">
-<dt id="hank.task.Task.params">
-<code class="sig-name descname"><span class="pre">params</span></code><em class="property"><span class="pre">:</span> <span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hank.task.Task.params" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hank.plans.Plan.plan_path">
+<span class="sig-name descname"><span class="pre">plan_path</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#hank.plans.Plan.plan_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.plans.Plan.receive">
+<span class="sig-name descname"><span class="pre">receive</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/plans.html#Plan.receive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.plans.Plan.receive" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.plans.Plan.task">
+<span class="sig-name descname"><span class="pre">task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#hank.task.Task" title="hank.task.Task"><span class="pre">hank.task.Task</span></a><a class="reference internal" href="_modules/hank/plans.html#Plan.task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.plans.Plan.task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hank.plans.argument_unpacking_plan">
+<span class="sig-prename descclassname"><span class="pre">hank.plans.</span></span><span class="sig-name descname"><span class="pre">argument_unpacking_plan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Callable</span><a class="reference internal" href="_modules/hank/plans.html#argument_unpacking_plan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.plans.argument_unpacking_plan" title="Permalink to this definition">¶</a></dt>
+<dd><p>A plan that follows python conventions around argument passing
+and returning results.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hank.plans.plan">
+<span class="sig-prename descclassname"><span class="pre">hank.plans.</span></span><span class="sig-name descname"><span class="pre">plan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Callable</span><a class="reference internal" href="_modules/hank/plans.html#plan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.plans.plan" title="Permalink to this definition">¶</a></dt>
+<dd><p>A basic plan. Expects to receive a <code class="docutils literal notranslate"><span class="pre">Task</span></code> as an argument.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-hank.result_store">
+<span id="hank-result-store-module"></span><h2>hank.result_store module<a class="headerlink" href="#module-hank.result_store" title="Permalink to this headline">¶</a></h2>
+<p>Result Stores store the results of executing plans according to tasks.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="hank.result_store.LocalMemoryResultStore">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hank.result_store.</span></span><span class="sig-name descname"><span class="pre">LocalMemoryResultStore</span></span><a class="reference internal" href="_modules/hank/result_store.html#LocalMemoryResultStore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.result_store.LocalMemoryResultStore" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Store results in local memory.</p>
+<p>Principally useful for testing or small toy applications.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.result_store.LocalMemoryResultStore.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">uuid.UUID</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Any</span><a class="reference internal" href="_modules/hank/result_store.html#LocalMemoryResultStore.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.result_store.LocalMemoryResultStore.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.result_store.LocalMemoryResultStore.store">
+<span class="sig-name descname"><span class="pre">store</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">uuid.UUID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/result_store.html#LocalMemoryResultStore.store"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.result_store.LocalMemoryResultStore.store" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hank.result_store.RedisResultStore">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hank.result_store.</span></span><span class="sig-name descname"><span class="pre">RedisResultStore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/result_store.html#RedisResultStore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.result_store.RedisResultStore" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A result store using redis.</p>
+<p>The generated ID of the task will be used as the key for the result.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.result_store.RedisResultStore.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">uuid.UUID</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Any</span><a class="reference internal" href="_modules/hank/result_store.html#RedisResultStore.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.result_store.RedisResultStore.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.result_store.RedisResultStore.store">
+<span class="sig-name descname"><span class="pre">store</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">uuid.UUID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/result_store.html#RedisResultStore.store"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.result_store.RedisResultStore.store" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hank.result_store.ResultStore">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hank.result_store.</span></span><span class="sig-name descname"><span class="pre">ResultStore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/result_store.html#ResultStore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.result_store.ResultStore" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.result_store.ResultStore.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">uuid.UUID</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Any</span><a class="reference internal" href="_modules/hank/result_store.html#ResultStore.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.result_store.ResultStore.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.result_store.ResultStore.store">
+<span class="sig-name descname"><span class="pre">store</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">uuid.UUID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/result_store.html#ResultStore.store"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.result_store.ResultStore.store" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-hank.site">
+<span id="hank-site-module"></span><h2>hank.site module<a class="headerlink" href="#module-hank.site" title="Permalink to this headline">¶</a></h2>
+<p>A Work Site is configured with a dispatcher to perform work from
+a specified set of queues.</p>
+<p>Most Work Sites can only accept specific types of queues,
+and will raise an exception if asked to acquire tasks of unexpected types.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="hank.site.LocalMemoryWorkSite">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hank.site.</span></span><span class="sig-name descname"><span class="pre">LocalMemoryWorkSite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dispatcher</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#hank.dispatcher.Dispatcher" title="hank.dispatcher.Dispatcher"><span class="pre">hank.dispatcher.Dispatcher</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">queue_names</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/site.html#LocalMemoryWorkSite"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.site.LocalMemoryWorkSite" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#hank.site.WorkSite" title="hank.site.WorkSite"><code class="xref py py-class docutils literal notranslate"><span class="pre">hank.site.WorkSite</span></code></a></p>
+<p>A work site capable of acquiring tasks from <code class="docutils literal notranslate"><span class="pre">LocalMemoryWorkQueue</span></code> and similar.</p>
+<p>Cannot <code class="docutils literal notranslate"><span class="pre">dispatch_forever</span></code> because that’s not really a good idea with local memory.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.site.LocalMemoryWorkSite.dispatch_until_exhausted">
+<span class="sig-name descname"><span class="pre">dispatch_until_exhausted</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/site.html#LocalMemoryWorkSite.dispatch_until_exhausted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.site.LocalMemoryWorkSite.dispatch_until_exhausted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dispatch from each queue in turn until it runs out of messages,
+then move on.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.site.LocalMemoryWorkSite.test_queue">
+<span class="sig-name descname"><span class="pre">test_queue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#hank.work_queue.WorkQueue" title="hank.work_queue.WorkQueue"><span class="pre">hank.work_queue.WorkQueue</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bool</span><a class="reference internal" href="_modules/hank/site.html#LocalMemoryWorkSite.test_queue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.site.LocalMemoryWorkSite.test_queue" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hank.site.RedisWorkSite">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hank.site.</span></span><span class="sig-name descname"><span class="pre">RedisWorkSite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dispatcher</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#hank.dispatcher.Dispatcher" title="hank.dispatcher.Dispatcher"><span class="pre">hank.dispatcher.Dispatcher</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">queue_names</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/site.html#RedisWorkSite"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.site.RedisWorkSite" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#hank.site.WorkSite" title="hank.site.WorkSite"><code class="xref py py-class docutils literal notranslate"><span class="pre">hank.site.WorkSite</span></code></a></p>
+<p>A work site capable of acquiring tasks from <code class="docutils literal notranslate"><span class="pre">RedisWorkQueue</span></code> and similar.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.site.RedisWorkSite.dispatch_forever">
+<span class="sig-name descname"><span class="pre">dispatch_forever</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/site.html#RedisWorkSite.dispatch_forever"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.site.RedisWorkSite.dispatch_forever" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dispatch until asked to stop.</p>
+<p>Will collect queues from identifiably identical redis instances together,
+and do a single <code class="docutils literal notranslate"><span class="pre">BLPOP</span></code> to get the next message from all queues
+from an instance.
+Configured queues are permuted before <code class="docutils literal notranslate"><span class="pre">BLPOP</span></code> to ensure
+a single very busy queue does not take over.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.site.RedisWorkSite.dispatch_until_exhausted">
+<span class="sig-name descname"><span class="pre">dispatch_until_exhausted</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/site.html#RedisWorkSite.dispatch_until_exhausted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.site.RedisWorkSite.dispatch_until_exhausted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dispatch from each queue in turn until it runs out of messages,
+then move on.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.site.RedisWorkSite.test_queue">
+<span class="sig-name descname"><span class="pre">test_queue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#hank.work_queue.WorkQueue" title="hank.work_queue.WorkQueue"><span class="pre">hank.work_queue.WorkQueue</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bool</span><a class="reference internal" href="_modules/hank/site.html#RedisWorkSite.test_queue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.site.RedisWorkSite.test_queue" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hank.site.WorkSite">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hank.site.</span></span><span class="sig-name descname"><span class="pre">WorkSite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dispatcher</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#hank.dispatcher.Dispatcher" title="hank.dispatcher.Dispatcher"><span class="pre">hank.dispatcher.Dispatcher</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">queue_names</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/site.html#WorkSite"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.site.WorkSite" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.site.WorkSite.test_queue">
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">test_queue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#hank.work_queue.WorkQueue" title="hank.work_queue.WorkQueue"><span class="pre">hank.work_queue.WorkQueue</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bool</span><a class="reference internal" href="_modules/hank/site.html#WorkSite.test_queue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.site.WorkSite.test_queue" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-hank.task">
+<span id="hank-task-module"></span><h2>hank.task module<a class="headerlink" href="#module-hank.task" title="Permalink to this headline">¶</a></h2>
+<p>Tasks are specifications of jobs to be done.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="hank.task.Task">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hank.task.</span></span><span class="sig-name descname"><span class="pre">Task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plan</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">store_result</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">worker</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#hank.task.Worker" title="hank.task.Worker"><span class="pre">hank.task.Worker</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/task.html#Task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.task.Task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Provide a description of work to be done that can easily be serialized
+to/from JSON.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.task.Task.options">
+<span class="sig-name descname"><span class="pre">options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/task.html#Task.options"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.task.Task.options" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hank.task.Task.params">
+<span class="sig-name descname"><span class="pre">params</span></span><em class="property"><span class="pre">:</span> <span class="pre">dict</span></em><a class="headerlink" href="#hank.task.Task.params" title="Permalink to this definition">¶</a></dt>
 <dd><p>Params to be provided to the plan during dispatch.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="hank.task.Task.plan">
-<code class="sig-name descname"><span class="pre">plan</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#hank.task.Task.plan" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hank.task.Task.plan">
+<span class="sig-name descname"><span class="pre">plan</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#hank.task.Task.plan" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of a registered plan.</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hank.task.Task.queue">
+<span class="sig-name descname"><span class="pre">queue</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#hank.task.Task.queue" title="Permalink to this definition">¶</a></dt>
+<dd><p>The queue to submit this task to.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hank.task.Task.store_result">
+<span class="sig-name descname"><span class="pre">store_result</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">False</span></em><a class="headerlink" href="#hank.task.Task.store_result" title="Permalink to this definition">¶</a></dt>
+<dd><p>The result store to store this task’s results in.</p>
+<ul class="simple">
+<li><p>True or None - default result store</p></li>
+<li><p>False - no result store</p></li>
+<li><p>string - named result store</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hank.task.Task.worker">
+<span class="sig-name descname"><span class="pre">worker</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="#hank.task.Worker" title="hank.task.Worker"><span class="pre">hank.task.Worker</span></a></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#hank.task.Task.worker" title="Permalink to this definition">¶</a></dt>
+<dd><p>The worker executing this task.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hank.task.Worker">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hank.task.</span></span><span class="sig-name descname"><span class="pre">Worker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">uuid.UUID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_store</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#hank.result_store.ResultStore" title="hank.result_store.ResultStore"><span class="pre">hank.result_store.ResultStore</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/task.html#Worker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.task.Worker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.task.Worker.store_result">
+<span class="sig-name descname"><span class="pre">store_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/task.html#Worker.store_result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.task.Worker.store_result" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-hank.work_queue">
+<span id="hank-work-queue-module"></span><h2>hank.work_queue module<a class="headerlink" href="#module-hank.work_queue" title="Permalink to this headline">¶</a></h2>
+<p>Work queues can submit tasks and be used by work sites to listen for tasks.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="hank.work_queue.LocalMemoryWorkQueue">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hank.work_queue.</span></span><span class="sig-name descname"><span class="pre">LocalMemoryWorkQueue</span></span><a class="reference internal" href="_modules/hank/work_queue.html#LocalMemoryWorkQueue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.work_queue.LocalMemoryWorkQueue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A work queue that keeps a set of tasks in local memory.</p>
+<p>Principally useful for testing or small toy applications.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.work_queue.LocalMemoryWorkQueue.send">
+<span class="sig-name descname"><span class="pre">send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/work_queue.html#LocalMemoryWorkQueue.send"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.work_queue.LocalMemoryWorkQueue.send" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hank.work_queue.RedisWorkQueue">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hank.work_queue.</span></span><span class="sig-name descname"><span class="pre">RedisWorkQueue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/work_queue.html#RedisWorkQueue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.work_queue.RedisWorkQueue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A work queue using redis lists.</p>
+<p>The configured queue name will be used as the name of the list.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.work_queue.RedisWorkQueue.send">
+<span class="sig-name descname"><span class="pre">send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/work_queue.html#RedisWorkQueue.send"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.work_queue.RedisWorkQueue.send" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hank.work_queue.WorkQueue">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hank.work_queue.</span></span><span class="sig-name descname"><span class="pre">WorkQueue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/work_queue.html#WorkQueue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.work_queue.WorkQueue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.work_queue.WorkQueue.send">
+<span class="sig-name descname"><span class="pre">send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/work_queue.html#WorkQueue.send"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.work_queue.WorkQueue.send" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -225,10 +540,173 @@
 <div class="section" id="module-hank">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-hank" title="Permalink to this headline">¶</a></h2>
 <p>Top-level package for hank.</p>
-<dl class="py function">
-<dt id="hank.get_module_version">
-<code class="sig-prename descclassname"><span class="pre">hank.</span></code><code class="sig-name descname"><span class="pre">get_module_version</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank.html#get_module_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.get_module_version" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="hank.Dispatcher">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hank.</span></span><span class="sig-name descname"><span class="pre">Dispatcher</span></span><a class="reference internal" href="_modules/hank/dispatcher.html#Dispatcher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.Dispatcher" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A dispatcher forms the core of a <code class="docutils literal notranslate"><span class="pre">hank</span></code> application.</p>
+<p>It maintains a registry of plans, queues, and result stores.
+The easiest way to ensure a coherent system is for all workers to use
+identically-configured dispatchers.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.Dispatcher.add_plan">
+<span class="sig-name descname"><span class="pre">add_plan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plan</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#hank.plans.Plan" title="hank.plans.Plan"><span class="pre">hank.plans.Plan</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/dispatcher.html#Dispatcher.add_plan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.Dispatcher.add_plan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inform this dispatcher about a plan for performing tasks.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.Dispatcher.add_queue">
+<span class="sig-name descname"><span class="pre">add_queue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#hank.work_queue.WorkQueue" title="hank.work_queue.WorkQueue"><span class="pre">hank.work_queue.WorkQueue</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">collections.abc.Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#hank.work_queue.WorkQueue" title="hank.work_queue.WorkQueue"><span class="pre">hank.work_queue.WorkQueue</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/dispatcher.html#Dispatcher.add_queue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.Dispatcher.add_queue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attach a work queue to this dispatcher.</p>
+<p>Work queues may be named by passing as keyword, or configured as the default.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.Dispatcher.add_result_store">
+<span class="sig-name descname"><span class="pre">add_result_store</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#hank.result_store.ResultStore" title="hank.result_store.ResultStore"><span class="pre">hank.result_store.ResultStore</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/dispatcher.html#Dispatcher.add_result_store"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.Dispatcher.add_result_store" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attach a result store to this dispatcher.</p>
+<p>Result stores may be named by passing as keyword, or configured as the default.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.Dispatcher.dispatch">
+<span class="sig-name descname"><span class="pre">dispatch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/dispatcher.html#Dispatcher.dispatch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.Dispatcher.dispatch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accept a message and perform the described task.</p>
+<p>A Work Site should be used to inform a dispatcher when a message is ready.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.Dispatcher.send">
+<span class="sig-name descname"><span class="pre">send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#hank.task.Task" title="hank.task.Task"><span class="pre">hank.task.Task</span></a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#hank.dispatcher.DispatchedTask" title="hank.dispatcher.DispatchedTask"><span class="pre">hank.dispatcher.DispatchedTask</span></a><a class="reference internal" href="_modules/hank/dispatcher.html#Dispatcher.send"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.Dispatcher.send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Submit a task to hopefully be performed by a worker.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hank.LocalMemoryResultStore">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hank.</span></span><span class="sig-name descname"><span class="pre">LocalMemoryResultStore</span></span><a class="reference internal" href="_modules/hank/result_store.html#LocalMemoryResultStore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.LocalMemoryResultStore" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Store results in local memory.</p>
+<p>Principally useful for testing or small toy applications.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.LocalMemoryResultStore.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">uuid.UUID</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Any</span><a class="reference internal" href="_modules/hank/result_store.html#LocalMemoryResultStore.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.LocalMemoryResultStore.get" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.LocalMemoryResultStore.store">
+<span class="sig-name descname"><span class="pre">store</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">uuid.UUID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/result_store.html#LocalMemoryResultStore.store"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.LocalMemoryResultStore.store" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hank.LocalMemoryWorkQueue">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hank.</span></span><span class="sig-name descname"><span class="pre">LocalMemoryWorkQueue</span></span><a class="reference internal" href="_modules/hank/work_queue.html#LocalMemoryWorkQueue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.LocalMemoryWorkQueue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A work queue that keeps a set of tasks in local memory.</p>
+<p>Principally useful for testing or small toy applications.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.LocalMemoryWorkQueue.send">
+<span class="sig-name descname"><span class="pre">send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/work_queue.html#LocalMemoryWorkQueue.send"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.LocalMemoryWorkQueue.send" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hank.LocalMemoryWorkSite">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hank.</span></span><span class="sig-name descname"><span class="pre">LocalMemoryWorkSite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dispatcher</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#hank.dispatcher.Dispatcher" title="hank.dispatcher.Dispatcher"><span class="pre">hank.dispatcher.Dispatcher</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">queue_names</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/site.html#LocalMemoryWorkSite"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.LocalMemoryWorkSite" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#hank.site.WorkSite" title="hank.site.WorkSite"><code class="xref py py-class docutils literal notranslate"><span class="pre">hank.site.WorkSite</span></code></a></p>
+<p>A work site capable of acquiring tasks from <code class="docutils literal notranslate"><span class="pre">LocalMemoryWorkQueue</span></code> and similar.</p>
+<p>Cannot <code class="docutils literal notranslate"><span class="pre">dispatch_forever</span></code> because that’s not really a good idea with local memory.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.LocalMemoryWorkSite.dispatch_until_exhausted">
+<span class="sig-name descname"><span class="pre">dispatch_until_exhausted</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/site.html#LocalMemoryWorkSite.dispatch_until_exhausted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.LocalMemoryWorkSite.dispatch_until_exhausted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dispatch from each queue in turn until it runs out of messages,
+then move on.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.LocalMemoryWorkSite.test_queue">
+<span class="sig-name descname"><span class="pre">test_queue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#hank.work_queue.WorkQueue" title="hank.work_queue.WorkQueue"><span class="pre">hank.work_queue.WorkQueue</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bool</span><a class="reference internal" href="_modules/hank/site.html#LocalMemoryWorkSite.test_queue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.LocalMemoryWorkSite.test_queue" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hank.RedisResultStore">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hank.</span></span><span class="sig-name descname"><span class="pre">RedisResultStore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/result_store.html#RedisResultStore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.RedisResultStore" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A result store using redis.</p>
+<p>The generated ID of the task will be used as the key for the result.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.RedisResultStore.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">uuid.UUID</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Any</span><a class="reference internal" href="_modules/hank/result_store.html#RedisResultStore.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.RedisResultStore.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.RedisResultStore.store">
+<span class="sig-name descname"><span class="pre">store</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">uuid.UUID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/result_store.html#RedisResultStore.store"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.RedisResultStore.store" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hank.RedisWorkQueue">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hank.</span></span><span class="sig-name descname"><span class="pre">RedisWorkQueue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/work_queue.html#RedisWorkQueue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.RedisWorkQueue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A work queue using redis lists.</p>
+<p>The configured queue name will be used as the name of the list.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.RedisWorkQueue.send">
+<span class="sig-name descname"><span class="pre">send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/work_queue.html#RedisWorkQueue.send"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.RedisWorkQueue.send" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hank.RedisWorkSite">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hank.</span></span><span class="sig-name descname"><span class="pre">RedisWorkSite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dispatcher</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#hank.dispatcher.Dispatcher" title="hank.dispatcher.Dispatcher"><span class="pre">hank.dispatcher.Dispatcher</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">queue_names</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/site.html#RedisWorkSite"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.RedisWorkSite" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#hank.site.WorkSite" title="hank.site.WorkSite"><code class="xref py py-class docutils literal notranslate"><span class="pre">hank.site.WorkSite</span></code></a></p>
+<p>A work site capable of acquiring tasks from <code class="docutils literal notranslate"><span class="pre">RedisWorkQueue</span></code> and similar.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.RedisWorkSite.dispatch_forever">
+<span class="sig-name descname"><span class="pre">dispatch_forever</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/site.html#RedisWorkSite.dispatch_forever"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.RedisWorkSite.dispatch_forever" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dispatch until asked to stop.</p>
+<p>Will collect queues from identifiably identical redis instances together,
+and do a single <code class="docutils literal notranslate"><span class="pre">BLPOP</span></code> to get the next message from all queues
+from an instance.
+Configured queues are permuted before <code class="docutils literal notranslate"><span class="pre">BLPOP</span></code> to ensure
+a single very busy queue does not take over.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.RedisWorkSite.dispatch_until_exhausted">
+<span class="sig-name descname"><span class="pre">dispatch_until_exhausted</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/hank/site.html#RedisWorkSite.dispatch_until_exhausted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.RedisWorkSite.dispatch_until_exhausted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dispatch from each queue in turn until it runs out of messages,
+then move on.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hank.RedisWorkSite.test_queue">
+<span class="sig-name descname"><span class="pre">test_queue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#hank.work_queue.WorkQueue" title="hank.work_queue.WorkQueue"><span class="pre">hank.work_queue.WorkQueue</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bool</span><a class="reference internal" href="_modules/hank/site.html#RedisWorkSite.test_queue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.RedisWorkSite.test_queue" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hank.argument_unpacking_plan">
+<span class="sig-prename descclassname"><span class="pre">hank.</span></span><span class="sig-name descname"><span class="pre">argument_unpacking_plan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Callable</span><a class="reference internal" href="_modules/hank/plans.html#argument_unpacking_plan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.argument_unpacking_plan" title="Permalink to this definition">¶</a></dt>
+<dd><p>A plan that follows python conventions around argument passing
+and returning results.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hank.plan">
+<span class="sig-prename descclassname"><span class="pre">hank.</span></span><span class="sig-name descname"><span class="pre">plan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Callable</span><a class="reference internal" href="_modules/hank/plans.html#plan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hank.plan" title="Permalink to this definition">¶</a></dt>
+<dd><p>A basic plan. Expects to receive a <code class="docutils literal notranslate"><span class="pre">Task</span></code> as an argument.</p>
+</dd></dl>
 
 </div>
 </div>

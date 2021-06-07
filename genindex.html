@@ -13,6 +13,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +31,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -97,7 +100,12 @@
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Package modules</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="hank.html">hank package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="hank.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hank.html#module-hank.dispatcher">hank.dispatcher module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hank.html#module-hank.plans">hank.plans module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hank.html#module-hank.result_store">hank.result_store module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hank.html#module-hank.site">hank.site module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hank.html#module-hank.task">hank.task module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hank.html#module-hank.work_queue">hank.work_queue module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hank.html#module-hank">Module contents</a></li>
 </ul>
 </li>
@@ -178,27 +186,108 @@
 <h1 id="index">Index</h1>
 
 <div class="genindex-jumpbox">
- <a href="#D"><strong>D</strong></a>
+ <a href="#A"><strong>A</strong></a>
+ | <a href="#D"><strong>D</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
+ | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
+ | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
+ | <a href="#Q"><strong>Q</strong></a>
+ | <a href="#R"><strong>R</strong></a>
+ | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
+ | <a href="#W"><strong>W</strong></a>
  
 </div>
+<h2 id="A">A</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="hank.html#hank.Dispatcher.add_plan">add_plan() (hank.Dispatcher method)</a>
+
+      <ul>
+        <li><a href="hank.html#hank.dispatcher.Dispatcher.add_plan">(hank.dispatcher.Dispatcher method)</a>
+</li>
+      </ul></li>
+      <li><a href="hank.html#hank.Dispatcher.add_queue">add_queue() (hank.Dispatcher method)</a>
+
+      <ul>
+        <li><a href="hank.html#hank.dispatcher.Dispatcher.add_queue">(hank.dispatcher.Dispatcher method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="hank.html#hank.Dispatcher.add_result_store">add_result_store() (hank.Dispatcher method)</a>
+
+      <ul>
+        <li><a href="hank.html#hank.dispatcher.Dispatcher.add_result_store">(hank.dispatcher.Dispatcher method)</a>
+</li>
+      </ul></li>
+      <li><a href="hank.html#hank.argument_unpacking_plan">argument_unpacking_plan() (in module hank)</a>
+
+      <ul>
+        <li><a href="hank.html#hank.plans.argument_unpacking_plan">(in module hank.plans)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="hank.html#hank.task.Task.dispatcher">dispatcher (hank.task.Task attribute)</a>
+      <li><a href="hank.html#hank.Dispatcher.dispatch">dispatch() (hank.Dispatcher method)</a>
+
+      <ul>
+        <li><a href="hank.html#hank.dispatcher.Dispatcher.dispatch">(hank.dispatcher.Dispatcher method)</a>
 </li>
+      </ul></li>
+      <li><a href="hank.html#hank.RedisWorkSite.dispatch_forever">dispatch_forever() (hank.RedisWorkSite method)</a>
+
+      <ul>
+        <li><a href="hank.html#hank.site.RedisWorkSite.dispatch_forever">(hank.site.RedisWorkSite method)</a>
+</li>
+      </ul></li>
+      <li><a href="hank.html#hank.LocalMemoryWorkSite.dispatch_until_exhausted">dispatch_until_exhausted() (hank.LocalMemoryWorkSite method)</a>
+
+      <ul>
+        <li><a href="hank.html#hank.RedisWorkSite.dispatch_until_exhausted">(hank.RedisWorkSite method)</a>
+</li>
+        <li><a href="hank.html#hank.site.LocalMemoryWorkSite.dispatch_until_exhausted">(hank.site.LocalMemoryWorkSite method)</a>
+</li>
+        <li><a href="hank.html#hank.site.RedisWorkSite.dispatch_until_exhausted">(hank.site.RedisWorkSite method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="hank.html#hank.dispatcher.DispatchedTask">DispatchedTask (class in hank.dispatcher)</a>
+</li>
+      <li><a href="hank.html#hank.dispatcher.DispatchedTaskTimeout">DispatchedTaskTimeout</a>
+</li>
+      <li><a href="hank.html#hank.Dispatcher">Dispatcher (class in hank)</a>
+
+      <ul>
+        <li><a href="hank.html#hank.dispatcher.Dispatcher">(class in hank.dispatcher)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="hank.html#hank.get_module_version">get_module_version() (in module hank)</a>
+      <li><a href="hank.html#hank.LocalMemoryResultStore.get">get() (hank.LocalMemoryResultStore method)</a>
+
+      <ul>
+        <li><a href="hank.html#hank.RedisResultStore.get">(hank.RedisResultStore method)</a>
 </li>
+        <li><a href="hank.html#hank.result_store.LocalMemoryResultStore.get">(hank.result_store.LocalMemoryResultStore method)</a>
+</li>
+        <li><a href="hank.html#hank.result_store.RedisResultStore.get">(hank.result_store.RedisResultStore method)</a>
+</li>
+        <li><a href="hank.html#hank.result_store.ResultStore.get">(hank.result_store.ResultStore method)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -212,13 +301,74 @@
         <li><a href="hank.html#module-hank">module</a>
 </li>
       </ul></li>
+      <li>
+    hank.dispatcher
+
+      <ul>
+        <li><a href="hank.html#module-hank.dispatcher">module</a>
+</li>
+      </ul></li>
+      <li>
+    hank.plans
+
+      <ul>
+        <li><a href="hank.html#module-hank.plans">module</a>
+</li>
+      </ul></li>
+      <li>
+    hank.result_store
+
+      <ul>
+        <li><a href="hank.html#module-hank.result_store">module</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    hank.site
+
+      <ul>
+        <li><a href="hank.html#module-hank.site">module</a>
+</li>
+      </ul></li>
       <li>
     hank.task
 
       <ul>
         <li><a href="hank.html#module-hank.task">module</a>
+</li>
+      </ul></li>
+      <li>
+    hank.work_queue
+
+      <ul>
+        <li><a href="hank.html#module-hank.work_queue">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="hank.html#hank.LocalMemoryResultStore">LocalMemoryResultStore (class in hank)</a>
+
+      <ul>
+        <li><a href="hank.html#hank.result_store.LocalMemoryResultStore">(class in hank.result_store)</a>
+</li>
+      </ul></li>
+      <li><a href="hank.html#hank.LocalMemoryWorkQueue">LocalMemoryWorkQueue (class in hank)</a>
+
+      <ul>
+        <li><a href="hank.html#hank.work_queue.LocalMemoryWorkQueue">(class in hank.work_queue)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="hank.html#hank.LocalMemoryWorkSite">LocalMemoryWorkSite (class in hank)</a>
+
+      <ul>
+        <li><a href="hank.html#hank.site.LocalMemoryWorkSite">(class in hank.site)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -233,9 +383,27 @@
       <ul>
         <li><a href="hank.html#module-hank">hank</a>
 </li>
+        <li><a href="hank.html#module-hank.dispatcher">hank.dispatcher</a>
+</li>
+        <li><a href="hank.html#module-hank.plans">hank.plans</a>
+</li>
+        <li><a href="hank.html#module-hank.result_store">hank.result_store</a>
+</li>
+        <li><a href="hank.html#module-hank.site">hank.site</a>
+</li>
         <li><a href="hank.html#module-hank.task">hank.task</a>
 </li>
+        <li><a href="hank.html#module-hank.work_queue">hank.work_queue</a>
+</li>
       </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="O">O</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="hank.html#hank.task.Task.options">options() (hank.task.Task method)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -244,9 +412,97 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="hank.html#hank.task.Task.params">params (hank.task.Task attribute)</a>
 </li>
+      <li><a href="hank.html#hank.plans.Plan">Plan (class in hank.plans)</a>
+</li>
+      <li><a href="hank.html#hank.task.Task.plan">plan (hank.task.Task attribute)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="hank.html#hank.task.Task.plan">plan (hank.task.Task attribute)</a>
+      <li><a href="hank.html#hank.plan">plan() (in module hank)</a>
+
+      <ul>
+        <li><a href="hank.html#hank.plans.plan">(in module hank.plans)</a>
+</li>
+      </ul></li>
+      <li><a href="hank.html#hank.plans.Plan.plan_path">plan_path (hank.plans.Plan attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="Q">Q</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="hank.html#hank.task.Task.queue">queue (hank.task.Task attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="R">R</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="hank.html#hank.plans.Plan.receive">receive() (hank.plans.Plan method)</a>
+</li>
+      <li><a href="hank.html#hank.RedisResultStore">RedisResultStore (class in hank)</a>
+
+      <ul>
+        <li><a href="hank.html#hank.result_store.RedisResultStore">(class in hank.result_store)</a>
+</li>
+      </ul></li>
+      <li><a href="hank.html#hank.RedisWorkQueue">RedisWorkQueue (class in hank)</a>
+
+      <ul>
+        <li><a href="hank.html#hank.work_queue.RedisWorkQueue">(class in hank.work_queue)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="hank.html#hank.RedisWorkSite">RedisWorkSite (class in hank)</a>
+
+      <ul>
+        <li><a href="hank.html#hank.site.RedisWorkSite">(class in hank.site)</a>
+</li>
+      </ul></li>
+      <li><a href="hank.html#hank.result_store.ResultStore">ResultStore (class in hank.result_store)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="S">S</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="hank.html#hank.Dispatcher.send">send() (hank.Dispatcher method)</a>
+
+      <ul>
+        <li><a href="hank.html#hank.dispatcher.Dispatcher.send">(hank.dispatcher.Dispatcher method)</a>
+</li>
+        <li><a href="hank.html#hank.LocalMemoryWorkQueue.send">(hank.LocalMemoryWorkQueue method)</a>
+</li>
+        <li><a href="hank.html#hank.RedisWorkQueue.send">(hank.RedisWorkQueue method)</a>
+</li>
+        <li><a href="hank.html#hank.work_queue.LocalMemoryWorkQueue.send">(hank.work_queue.LocalMemoryWorkQueue method)</a>
+</li>
+        <li><a href="hank.html#hank.work_queue.RedisWorkQueue.send">(hank.work_queue.RedisWorkQueue method)</a>
+</li>
+        <li><a href="hank.html#hank.work_queue.WorkQueue.send">(hank.work_queue.WorkQueue method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="hank.html#hank.LocalMemoryResultStore.store">store() (hank.LocalMemoryResultStore method)</a>
+
+      <ul>
+        <li><a href="hank.html#hank.RedisResultStore.store">(hank.RedisResultStore method)</a>
+</li>
+        <li><a href="hank.html#hank.result_store.LocalMemoryResultStore.store">(hank.result_store.LocalMemoryResultStore method)</a>
+</li>
+        <li><a href="hank.html#hank.result_store.RedisResultStore.store">(hank.result_store.RedisResultStore method)</a>
+</li>
+        <li><a href="hank.html#hank.result_store.ResultStore.store">(hank.result_store.ResultStore method)</a>
+</li>
+      </ul></li>
+      <li><a href="hank.html#hank.task.Task.store_result">store_result (hank.task.Task attribute)</a>
+</li>
+      <li><a href="hank.html#hank.task.Worker.store_result">store_result() (hank.task.Worker method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -255,6 +511,38 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="hank.html#hank.task.Task">Task (class in hank.task)</a>
+</li>
+      <li><a href="hank.html#hank.plans.Plan.task">task() (hank.plans.Plan method)</a>
+</li>
+      <li><a href="hank.html#hank.LocalMemoryWorkSite.test_queue">test_queue() (hank.LocalMemoryWorkSite method)</a>
+
+      <ul>
+        <li><a href="hank.html#hank.RedisWorkSite.test_queue">(hank.RedisWorkSite method)</a>
+</li>
+        <li><a href="hank.html#hank.site.LocalMemoryWorkSite.test_queue">(hank.site.LocalMemoryWorkSite method)</a>
+</li>
+        <li><a href="hank.html#hank.site.RedisWorkSite.test_queue">(hank.site.RedisWorkSite method)</a>
+</li>
+        <li><a href="hank.html#hank.site.WorkSite.test_queue">(hank.site.WorkSite method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="hank.html#hank.dispatcher.DispatchedTask.wait">wait() (hank.dispatcher.DispatchedTask method)</a>
+</li>
+      <li><a href="hank.html#hank.task.Worker">Worker (class in hank.task)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="hank.html#hank.task.Task.worker">worker (hank.task.Task attribute)</a>
+</li>
+      <li><a href="hank.html#hank.work_queue.WorkQueue">WorkQueue (class in hank.work_queue)</a>
+</li>
+      <li><a href="hank.html#hank.site.WorkSite">WorkSite (class in hank.site)</a>
 </li>
   </ul></td>
 </tr></table>

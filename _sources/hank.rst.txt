@@ -4,10 +4,50 @@ hank package
 Submodules
 ----------
 
+hank.dispatcher module
+----------------------
+
+.. automodule:: hank.dispatcher
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+hank.plans module
+-----------------
+
+.. automodule:: hank.plans
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+hank.result\_store module
+-------------------------
+
+.. automodule:: hank.result_store
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+hank.site module
+----------------
+
+.. automodule:: hank.site
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 hank.task module
 ----------------
 
 .. automodule:: hank.task
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+hank.work\_queue module
+-----------------------
+
+.. automodule:: hank.work_queue
    :members:
    :undoc-members:
    :show-inheritance:

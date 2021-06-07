@@ -15,7 +15,10 @@ Worker
     A process that executes plans based on tasks
 
 Dispatcher
-    An object that handles the mechanics of submitting and accepting tasks
+    An object that handles the mechanics of submitting and performing tasks
 
 Work order
     Tasks can be connected together by flow operators to orchestrate more complex objectives
+
+Work Site
+    How a worker is configured to acquire tasks for a dispatcher to perform

@@ -13,6 +13,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +31,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -98,7 +101,12 @@
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Package modules</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="hank.html">hank package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="hank.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hank.html#module-hank.dispatcher">hank.dispatcher module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hank.html#module-hank.plans">hank.plans module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hank.html#module-hank.result_store">hank.result_store module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hank.html#module-hank.site">hank.site module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hank.html#module-hank.task">hank.task module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hank.html#module-hank.work_queue">hank.work_queue module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hank.html#module-hank">Module contents</a></li>
 </ul>
 </li>
@@ -195,9 +203,11 @@
 </dd>
 <dt>Worker</dt><dd><p>A process that executes plans based on tasks</p>
 </dd>
-<dt>Dispatcher</dt><dd><p>An object that handles the mechanics of submitting and accepting tasks</p>
+<dt>Dispatcher</dt><dd><p>An object that handles the mechanics of submitting and performing tasks</p>
 </dd>
 <dt>Work order</dt><dd><p>Tasks can be connected together by flow operators to orchestrate more complex objectives</p>
+</dd>
+<dt>Work Site</dt><dd><p>How a worker is configured to acquire tasks for a dispatcher to perform</p>
 </dd>
 </dl>
 </div>

@@ -17,11 +17,12 @@ Hank is an asynchronous job processing and orchestration system.
 ## Quick Start
 
 ```python
-from hank import Dispatcher, LocalMemoryWorkQueue, LocalMemoryResultStore, task
+from hank import argument_unpacking_plan, Dispatcher, LocalMemoryWorkQueue, LocalMemoryResultStore, LocalMemoryWorkSite
 
 
-@task
-def arithmetic_task(x, y):
+# argument_unpacking_plan includes setting result from return value.
+@argument_unpacking_plan
+def do_arithmetic(x, y):
     return x + y
 
 
@@ -30,41 +31,49 @@ dispatcher = Dispatcher()
 
 if __name__ == '__main__':
     result_store = LocalMemoryResultStore()
-    dispatcher.add_queue(LocalMemoryWorkQueue())
+    # Unnamed queue - default for all messages.
+    dispatcher.add_queue(default=LocalMemoryWorkQueue())
+    # Unnamed result store - default for any results.
     dispatcher.add_result_store(result_store)
-    dispatcher.add_job(arithmetic_task)
-    result = dispatcher.send(arithmetic_task.work_order(2, 3))
-    dispatcher.dispatch_until_exhausted()
+    dispatcher.add_plan(do_arithmetic)
+    # Store result could also take the name of a configured result store.
+    result = dispatcher.send(
+        do_arithmetic.task(2, 3).options(store_result=True)
+    )
+    work_site = LocalMemoryWorkSite(dispatcher, None)
+    work_site.dispatch_until_exhausted()
     print(result.wait())
 ```
 
 ```python
 import sys
 
-from hank import Dispatcher, job, RedisWorkQueue, RedisResultStore
+from hank import Dispatcher, plan, RedisWorkQueue, RedisResultStore, RedisWorkSite
 
 
-@job
-def arithmetic_job(work_order):
-    work_order.dispatcher.store_result(sum(work_order.params['args']))
+@plan
+def do_arithmetic(task):
+    task.worker.store_result(sum(task.params['args']))
 
 
 dispatcher = Dispatcher()
 
 
 if __name__ == '__main__':
-    result_store = RedisResultStore('redis://localhost:6379/1')
-    dispatcher.add_queue(RedisWorkQueue('redis://localhost:6379/0'))
-    dispatcher.add_result_store(result_store)
-    dispatcher.add_job(arithmetic_job)
+    dispatcher.add_queue(example_queue=RedisWorkQueue(url='redis://localhost:6379/0', queue='example_queue'))
+    dispatcher.add_result_store(example_store=RedisResultStore('redis://localhost:6379/1'))
+    dispatcher.add_plan(do_arithmetic)
 
     if sys.argv[1] == 'worker':
-        dispatcher.dispatch_forver()
+        work_site = RedisWorkSite(dispatcher, 'example_queue')
+        work_site.dispatch_forever()
     else:
         result = dispatcher.send(
-            arithmetic_job.work_order(
-                args=[int(i) for i in sys.argv[1:]]
-            )
+            do_arithmetic.task(
+                params=dict(args=[int(i) for i in sys.argv[1:]]),
+                queue='example_queue',
+                store_result='example_store',
+            ),
         )
         print(result.wait())
 ```

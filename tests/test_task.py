@@ -10,8 +10,6 @@ class TestTask(unittest.TestCase):
 
         sample_task = Task(plan="a_plan", params={"args": [42]})
         self.assertEqual(
-            json.dumps(dataclasses.asdict(sample_task)),
-            json.dumps(
-                {"plan": "a_plan", "params": {"args": [42]}, "dispatcher": None}
-            ),
+            Task(**json.loads(json.dumps(dataclasses.asdict(sample_task)))),
+            sample_task,
         )
